@@ -63,6 +63,7 @@ int main(int argc, char *argv[]) {
     double start_write, time_taken_write;
     int64_t nedges;
     packed_edge *result;
+    int64_t weight; //***changed here
     int binary = 0; // set default to be not binary, normal tsv
 
     numEdges = 16;  // default 16
@@ -112,7 +113,11 @@ int main(int argc, char *argv[]) {
 
     /* Start of graph generation timing */
     start = omp_get_wtime();
-    make_graph(log_numverts, numEdges << log_numverts, seed, seed, &nedges, &result);
+    make_graph(log_numverts, numEdges << log_numverts, seed, seed, &nedges, &result
+//#ifdef SSSP
+    , &weight  //***changed here
+//#endif
+);
     time_taken = omp_get_wtime() - start;
 
     /* End of graph generation timing */
@@ -132,7 +137,7 @@ int main(int argc, char *argv[]) {
         // print to the file
         start_write = omp_get_wtime();
         for (int i = 0; i < (numEdges << log_numverts); i++) {
-            fprintf(fout, "%lu\t%lu\n", get_v0_from_edge(result + i), get_v1_from_edge(result + i));
+            fprintf(fout, "%lu\t%lu\t%ld\n", get_v0_from_edge(result + i), get_v1_from_edge(result + i), weight);
         }
         time_taken_write = omp_get_wtime() - start_write;
         printf("\t%f seconds for writing ascii version\n", time_taken_write);

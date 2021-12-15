@@ -41,10 +41,15 @@ static void compute_edge_range(int rank, int size, int64_t M, int64_t* start_idx
 
 #ifndef GRAPH_GENERATOR_MPI
 #include <omp.h>
-void make_graph(int log_numverts, int64_t M, uint64_t userseed1, uint64_t userseed2, int64_t* nedges_ptr_in, packed_edge** result_ptr_in) {
+void make_graph(int log_numverts, int64_t M, uint64_t userseed1, uint64_t userseed2, int64_t* nedges_ptr_in, packed_edge** result_ptr_in
+//#ifdef SSSP
+    , int64_t* weight_ptr_in //***changed here
+//#endif
+) {
   /* Add restrict to input pointers. */
   int64_t* restrict nedges_ptr = nedges_ptr_in;
   packed_edge* restrict* restrict result_ptr = result_ptr_in;
+  int64_t* restrict weight_ptr = weight_ptr_in; //***changed here
 
   /* Spread the two 64-bit numbers into five nonzero values in the correct
    * range. */
@@ -54,10 +59,17 @@ void make_graph(int log_numverts, int64_t M, uint64_t userseed1, uint64_t userse
   *nedges_ptr = M;
   packed_edge* edges = (packed_edge*)xmalloc(M * sizeof(packed_edge));
   *result_ptr = edges;
-
+//#ifdef SSSP
+  int64_t* wedges = (int64_t*)xmalloc(M * sizeof(int64_t)); //***changed here
+  *weight_ptr = wedges; //***changed here
+//#endif SSSP
   /* In OpenMP and XMT versions, the inner loop in generate_kronecker_range is
    * parallel.  */
-  generate_kronecker_range(seed, log_numverts, 0, M, edges);
+  generate_kronecker_range(seed, log_numverts, 0, M, edges
+//#ifdef SSSP
+	, wedges //***changed here
+//#endif
+);
 }
 
 // Modified part

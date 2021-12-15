@@ -275,6 +275,10 @@ double mrg_get_double_orig(mrg_state* state) {
          (double)mrg_get_uint_orig(state) * .0000000000000000002168404346990492787 /* (2^31 - 1)^(-2) */
     ;
 }
+/* changed here */
+float mrg_get_float_orig(mrg_state* state) {
+  return (float)mrg_get_uint_orig(state) * .000000000465661287524579692; /* (2^31 - 1)^(-1) */
+}
 
 void mrg_seed(mrg_state* st, const uint_fast32_t seed[5]) {
   st->z1 = seed[0];

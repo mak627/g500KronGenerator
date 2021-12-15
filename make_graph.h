@@ -31,6 +31,7 @@ void make_graph(
   /* See functions in graph_generator.h for the definition of and how to
    * manipulate packed_edge objects (functions are write_edge,
    * get_v0_from_edge, get_v1_from_edge). */
+ , int64_t* weight
 );
 
 /* PRNG interface for implementations; takes seed in same format as given by
